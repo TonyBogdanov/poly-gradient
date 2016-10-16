@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="poly-gradient-stop">
+    <template>
+        <style>:host{display:block}</style>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'poly-gradient-stop',
+
+        properties: {
+            /**
+             * The offset position of the specified color, a number between `0` and `1`.
+             *
+             * No matter the number of color stops there must always be one defined at `0` and one at `1`.
+             */
+            offset: {
+                type: Number
+            },
+
+            /**
+             * A CSS compatible color definition, e.g. a hex color: `#00cae9`, rgb: `rgb(255, 0, 128)` or rgba for
+             * transparency: `rgba(0, 255, 128, 0.5)`.
+             */
+            color: {
+                type: String
+            }
+        },
+
+        attached: function() {
+            this.fire('poly-gradient-stop-ready', this);
+        }
+    });
+</script>
