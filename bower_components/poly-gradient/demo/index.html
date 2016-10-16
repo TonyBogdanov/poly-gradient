@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+    <title>poly-gradient demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../polymer/polymer.html">
+    <link rel="import" href="../../paper-styles/demo-pages.html">
+    <link rel="import" href="../poly-gradient.html">
+</head>
+<body unresolved>
+
+<h1>Default gradient</h1>
+<h2>No options &ndash; completely transparent</h2>
+<pre>
+&lt;poly-gradient width=&quot;320px&quot; height=&quot;240px&quot;&gt;&lt;/poly-gradient&gt;
+</pre>
+<poly-gradient width="320px" height="240px"></poly-gradient>
+<p>&nbsp;</p>
+
+<h1>Colorful</h1>
+<h2>Using the <code>stops</code> attribute</h2>
+<pre>
+&lt;poly-gradient angle=&quot;-90&quot; stops='{&quot;0&quot;:&quot;#f00&quot;,&quot;1&quot;:&quot;#0f0&quot;}' width=&quot;320px&quot; height=&quot;240px&quot;&gt;&lt;/poly-gradient&gt;
+</pre>
+<poly-gradient angle="-90" stops='{"0":"#f00","1":"#0f0"}' width="320px" height="240px"></poly-gradient>
+<p>&nbsp;</p>
+
+<h1>Colorful</h1>
+<h2>Using <code>&lt;poly-gradient-stop&gt;</code> elements</h2>
+<pre>
+&lt;poly-gradient angle=&quot;-75&quot; width=&quot;320px&quot; height=&quot;240px&quot;&gt;
+    &lt;poly-gradient-stop offset=&quot;0&quot; color=&quot;#f00&quot;&gt;&lt;/poly-gradient-stop&gt;
+    &lt;poly-gradient-stop offset=&quot;0.15&quot; color=&quot;#ff0&quot;&gt;&lt;/poly-gradient-stop&gt;
+    &lt;poly-gradient-stop offset=&quot;0.3&quot; color=&quot;#0f0&quot;&gt;&lt;/poly-gradient-stop&gt;
+    &lt;poly-gradient-stop offset=&quot;0.5&quot; color=&quot;#0ff&quot;&gt;&lt;/poly-gradient-stop&gt;
+    &lt;poly-gradient-stop offset=&quot;0.65&quot; color=&quot;#00f&quot;&gt;&lt;/poly-gradient-stop&gt;
+    &lt;poly-gradient-stop offset=&quot;0.8&quot; color=&quot;#f0f&quot;&gt;&lt;/poly-gradient-stop&gt;
+    &lt;poly-gradient-stop offset=&quot;1&quot; color=&quot;#f00&quot;&gt;&lt;/poly-gradient-stop&gt;
+&lt;/poly-gradient&gt;
+</pre>
+<poly-gradient angle="-75" width="320px" height="240px">
+    <poly-gradient-stop offset="0" color="#f00"></poly-gradient-stop>
+    <poly-gradient-stop offset="0.15" color="#ff0"></poly-gradient-stop>
+    <poly-gradient-stop offset="0.3" color="#0f0"></poly-gradient-stop>
+    <poly-gradient-stop offset="0.5" color="#0ff"></poly-gradient-stop>
+    <poly-gradient-stop offset="0.65" color="#00f"></poly-gradient-stop>
+    <poly-gradient-stop offset="0.8" color="#f0f"></poly-gradient-stop>
+    <poly-gradient-stop offset="1" color="#f00"></poly-gradient-stop>
+</poly-gradient>
+<p>&nbsp;</p>
+
+<h1>With content</h1>
+<pre>
+&lt;poly-gradient width=&quot;320px&quot; height=&quot;240px&quot; style=&quot;display:flex;align-items:center;justify-content:center;text-align:center&quot;&gt;
+    &lt;poly-gradient-stop offset=&quot;0&quot; color=&quot;#0B486B&quot;&gt;&lt;/poly-gradient-stop&gt;
+    &lt;poly-gradient-stop offset=&quot;1&quot; color=&quot;#F56217&quot;&gt;&lt;/poly-gradient-stop&gt;
+
+    &lt;p style=&quot;color:#fff&quot;&gt;Gradient elements can also have any type of content inside.&lt;/p&gt;
+&lt;/poly-gradient&gt;
+</pre>
+<poly-gradient width="320px" height="240px" style="display:flex;align-items:center;justify-content:center;text-align:center">
+    <poly-gradient-stop offset="0" color="#0B486B"></poly-gradient-stop>
+    <poly-gradient-stop offset="1" color="#F56217"></poly-gradient-stop>
+
+    <p style="color:#fff">Gradient elements can also have any type of content inside.</p>
+</poly-gradient>
+<p>&nbsp;</p>
+
+<h1>From a preset</h1>
+<h2>You can use a preset name instead of manually specifying stops</h2>
+<p>By default, presets are loaded from this
+    <a href="https://raw.githubusercontent.com/ghosh/uiGradients/master/gradients.json">JSON</a>. A list of presets
+    (names and preview) is available here: <a href="http://uigradients.com">uigradients.com</a>.</p>
+<pre>
+&lt;poly-gradient preset=&quot;Sunset&quot; width=&quot;320px&quot; height=&quot;240px&quot;&gt;&lt;/poly-gradient&gt;
+</pre>
+<poly-gradient preset="Sunset" width="320px" height="240px"></poly-gradient>
+<p>&nbsp;</p>
+
+<h1>Nested</h1>
+<h2>You can even nest gradients into each other</h2>
+<pre>
+&lt;poly-gradient angle=&quot;45&quot; preset=&quot;Bloody Mary&quot; width=&quot;320px&quot; height=&quot;240px&quot; style=&quot;display:flex;align-items:center;justify-content:center;text-align:center&quot;&gt;
+    &lt;poly-gradient angle=&quot;-45&quot; preset=&quot;Horizon&quot; width=&quot;240px&quot; height=&quot;120px&quot;&gt;&lt;/poly-gradient&gt;
+&lt;/poly-gradient&gt;
+</pre>
+<poly-gradient angle="45" preset="Bloody Mary" width="320px" height="240px" style="display:flex;align-items:center;justify-content:center;text-align:center">
+    <poly-gradient angle="-45" preset="Horizon" width="240px" height="120px"></poly-gradient>
+</poly-gradient>
+<p>&nbsp;</p>
+
+</body>
+</html>

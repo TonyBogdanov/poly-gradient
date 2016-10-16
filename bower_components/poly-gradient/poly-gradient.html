@@ -1,0 +1,191 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-localstorage/iron-localstorage.html">
+<link rel="import" href="poly-gradient-stop.html">
+
+<!--
+`<poly-gradient>` provides a simple way of creating gradient backgrounds through a
+[Polymer](https://polymer-project.org) element.
+
+Supports manually specifying color stops or presets loaded from an external JSON file.
+
+@demo
+-->
+<dom-module id="poly-gradient">
+    <template>
+        <style>:host{display:block}</style>
+
+        <iron-localstorage
+                id="cache"
+                name="poly-gradient-presets"
+                on-iron-localstorage-load="_loadedPresetsFromCache"
+                on-iron-localstorage-load-empty="_loadPresetsFromJson"></iron-localstorage>
+
+        <iron-ajax
+                id="ajax"
+                url="[[presetsUrl]]"
+                handle-as="json"
+                on-response="_loadedPresetsFromJson"></iron-ajax>
+
+        <content></content>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'poly-gradient',
+
+        properties: {
+            /**
+             * Loaded presets.
+             */
+            _presets: {
+                type: Object
+            },
+
+            /**
+             * The angle in degrees of the gradient, a number between `0` and `360`, where `360` actually equals `0`.
+             */
+            angle: {
+                type: Number,
+                value: 0
+            },
+
+            /**
+             * An object defining all gradient color stops. Each key defines a color stop offset position, a number
+             * between `0` and `1`, each value defines a CSS compatible color, e.g. hex: `#00cae9`,
+             * rgb: `rgb(255, 0, 128)` or rgba for transparency: `rgba(0, 255, 128, 0.5)`.
+             *
+             * No matter the number of color stops there must always be one defined at `0` and one at `1`.
+             *
+             * You can also use `<poly-gradient-stop>` elements if you don't want to define this object.
+             */
+            stops: {
+                type: Object,
+                value: function() {
+                    return {
+                        '0': 'rgba(0, 0, 0, 0)',
+                        '1': 'rgba(0, 0, 0, 0)'
+                    };
+                }
+            },
+
+            /**
+             * If set, the element will use a preset with the given name instead of any specified stops.
+             * The preset will be loaded from the URL specified in `presetsUrl`.
+             */
+            preset: {
+                type: String
+            },
+
+            /**
+             * URL to a JSON file of gradient presets.
+             */
+            presetsUrl: {
+                type: String,
+                value: 'https://raw.githubusercontent.com/ghosh/uiGradients/master/gradients.json'
+            },
+
+            /**
+             * Use this to specify for how long (in seconds) will presets be cached in the user's browser before
+             * being re-downloaded (time to live). Default is 1 day.
+             *
+             * Set to 0 to disable caching.
+             */
+            presetsCacheTtl: {
+                type: Number,
+                value: 86400
+            },
+
+            /**
+             * Optionally specify a width for the element using a CSS compatible unit, e.g. `100px`.
+             */
+            width: {
+                type: String,
+                observer: '_widthChanged'
+            },
+
+            /**
+             * Optionally specify a width for the element using a CSS compatible unit, e.g. `100px`.
+             */
+            height: {
+                type: String,
+                observer: '_heightChanged'
+            }
+        },
+
+        listeners: {
+            'poly-gradient-stop-ready': '_reportStop'
+        },
+
+        observers: [
+            'generate(angle, stops.*)',
+            '_applyPreset(preset, _presets)'
+        ],
+
+        _normalizePresetName: function(name) {
+            return name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+        },
+
+        _reportStop: function(e) {
+            e.stopImmediatePropagation();
+            this.stops[e.detail.offset] = e.detail.color;
+            this.generate();
+        },
+
+        _loadedPresetsFromCache: function() {
+            var cache = this.$.cache.value;
+            if(!cache || !cache.timestamp || cache.timestamp + (this.presetsCacheTtl * 1000) < (new Date()).getTime()) {
+                this.$.cache.value = undefined;
+                this.$.cache.fire('iron-localstorage-load-empty');
+            } else {
+                this._presets = cache.presets;
+            }
+        },
+
+        _loadedPresetsFromJson: function(e) {
+            var presets = {};
+            for(var key in e.detail.response) {
+                presets[this._normalizePresetName(e.detail.response[key]['name'])] = e.detail.response[key]['colors'];
+            }
+            this._presets = presets;
+            this.$.cache.value = {timestamp: (new Date()).getTime(), presets: presets};
+        },
+
+        _loadPresetsFromJson: function() {
+            this.$.ajax.generateRequest();
+        },
+
+        _applyPreset: function() {
+            var preset = this._normalizePresetName(this.preset);
+            if('undefined' != typeof this._presets[preset]) {
+                this.stops = this._presets[preset];
+            }
+        },
+
+        _widthChanged: function() {
+            this.style.width = this.width;
+        },
+
+        _heightChanged: function() {
+            this.style.height = this.height;
+        },
+
+        /**
+         * Generates the background gradient.
+         */
+        generate: function() {
+            if(0 == this.stops.length) {
+                return;
+            }
+
+            var def = this.angle + 'deg';
+            Object.keys(this.stops).sort().forEach(function(i) {
+                def += ',' + this.stops[i] + ' ' + (i * 100) + '%';
+            }.bind(this));
+
+            this.style.backgroundImage = '-webkit-linear-gradient(' + def + ')';
+            this.style.backgroundImage = 'linear-gradient(' + def + ')';
+        }
+    });
+</script>
