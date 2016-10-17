@@ -184,7 +184,6 @@ Supports manually specifying color stops or presets loaded from an external JSON
                 def += ',' + this.stops[i] + ' ' + (i * 100) + '%';
             }.bind(this));
 
-            this.style.backgroundImage = '-webkit-linear-gradient(' + def + ')';
             this.style.backgroundImage = 'linear-gradient(' + def + ')';
         }
     });
